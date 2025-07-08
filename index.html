@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReidConnect AcademicAdmin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#151718',
+                        secondary: '#1A1A1A',
+                        accent: '#FFFFFF', 
+                        white: '#FFFFFF',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html, body { height: 100%; margin: 0; overflow: hidden; }
+        body { background: #151718 !important; color: #fff; }
+        .container { max-height: calc(100vh - 64px); }
+        .sidebar-item { transition: all 0.3s ease; }
+        .sidebar-item:hover { transform: translateX(5px); background: #FFFFFF; color: #151718; }
+        .card-bg { background: #1A1A1A; }
+        .shadow-md, .shadow-sm { box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .text-secondary { color: #1A1A1A; }
+        .bg-secondary { background: #1A1A1A; }
+        .bg-primary { background: #151718; }
+        .btn-red { background: #EF4444; color: #fff; }
+        .btn-red:hover { background: #DC2626; }
+        .btn-white { background: #fff; color: #151718; }
+        .btn-white:hover { background: #e5e5e5; }
+    </style>
+</head>
+<body class="bg-primary text-white font-sans">
+    <!-- Navbar -->
+    <nav class="bg-secondary p-3 shadow-md relative">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <h1 class="text-xl font-extrabold tracking-wide text-white">ReidConnect <span class="text-red-500">AcademicAdmin</span></h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <i class="fas fa-bell text-white text-xl"></i>
+                    <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-white border-2 border-secondary"></span>
+                </div>
+                <i class="fas fa-user text-white text-lg"></i>
+                <span class="text-base text-white font-semibold">Admin</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Layout with Sidebar -->
+    <div class="flex h-[calc(100vh-64px)]">
+        <!-- Sidebar -->
+        <aside class="w-48 bg-secondary p-2 flex flex-col justify-between">
+            <div>
+                <ul class="space-y-1 text-sm text-white">
+                    <li><a href="#dashboard" class="sidebar-item flex items-center p-1 rounded"><i class="fas fa-tachometer-alt mr-1 text-white"></i> Dashboard</a></li>
+                    <li><a href="#events" class="sidebar-item flex items-center p-1 rounded"><i class="fas fa-calendar mr-1 text-white"></i> Events</a></li>
+                    <li><a href="#lectures" class="sidebar-item flex items-center p-1 rounded"><i class="fas fa-book mr-1 text-white"></i> Lectures</a></li>
+                    <li><a href="#bookings" class="sidebar-item flex items-center p-1 rounded"><i class="fas fa-calendar-check mr-1 text-white"></i> Bookings</a></li>
+                    <li><a href="#reports" class="sidebar-item flex items-center p-1 rounded"><i class="fas fa-file-alt mr-1 text-white"></i> Reports</a></li>
+                    <li><a href="#notifications" class="sidebar-item flex items-center p-1 rounded"><i class="fas fa-bell mr-1 text-white"></i> Notifications</a></li>
+                </ul>
+            </div>
+            <div class="mb-2 flex flex-col items-center">
+                <button class="btn-red px-4 py-2 rounded text-base w-full font-semibold shadow-md">Logout <i class="fas fa-sign-out-alt ml-2"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 overflow-auto bg-primary">
+            <div class="space-y-4">
+                <!-- Dashboard (full width) -->
+                <section id="dashboard" class="card-bg p-3 rounded-lg shadow-md w-full mb-2">
+                    <h2 class="text-lg font-semibold mb-2 text-white">Dashboard</h2>
+                    
+                    <div id="calendarView" class="mt-2">
+                        <!-- Side by side layout matching the image -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Timeline Section (Left) -->
+                            <div class="bg-secondary p-3 rounded-lg">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 space-y-2 sm:space-y-0">
+                                    <h3 class="text-lg font-semibold text-white">Timeline</h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        <select class="bg-primary text-white text-xs px-2 py-1 rounded border border-gray-600">
+                                            <option>Next 7 days</option>
+                                            <option>Next 14 days</option>
+                                            <option>This month</option>
+                                        </select>
+                                        <select class="bg-primary text-white text-xs px-2 py-1 rounded border border-gray-600">
+                                            <option>Sort by dates</option>
+                                            <option>Sort by priority</option>
+                                            <option>Sort by status</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <input type="text" placeholder="Search by activity type or name" class="w-full bg-primary text-white text-xs px-3 py-2 rounded border border-gray-600 mb-3 placeholder-gray-400">
+                                
+                                <!-- Timeline Items -->
+                                <div class="space-y-2 max-h-60 overflow-y-auto">
+                                    
+                                    <!-- Thursday, 10 July 2025 -->
+                                    <div>
+                                        <h4 class="text-xs font-semibold text-gray-300 mb-1">Thu, 10 July</h4>
+                                        <div class="flex items-center justify-between bg-primary p-2 rounded">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="text-xs text-gray-400">10:00</div>
+                                                <div class="bg-orange-500 p-1 rounded text-xs">
+                                                    <i class="fas fa-chalkboard-teacher text-white"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-orange-400 text-xs font-semibold">AI Seminar</div>
+                                                    <div class="text-gray-400 text-xs">Room 101 • CS Dept</div>
+                                                </div>
+                                            </div>
+                                            <span class="bg-yellow-500 text-white px-1.5 py-0.5 rounded-full text-xs">Pending</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Tuesday, 15 July 2025 -->
+                                    <div>
+                                        <h4 class="text-xs font-semibold text-gray-300 mb-1">Tue, 15 July</h4>
+                                        <div class="flex items-center justify-between bg-primary p-2 rounded">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="text-xs text-gray-400">14:00</div>
+                                                <div class="bg-blue-500 p-1 rounded text-xs">
+                                                    <i class="fas fa-user-tie text-white"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="text-blue-400 text-xs font-semibold">Guest Lecture</div>
+                                                    <div class="text-gray-400 text-xs">Room 202 • Engineering</div>
+                                                </div>
+                                            </div>
+                                            <span class="bg-green-500 text-white px-1.5 py-0.5 rounded-full text-xs">Approved</span>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                            
+                            <!-- Calendar Section (Right) -->
+                            <div class="bg-secondary p-3 rounded-lg">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 space-y-2 sm:space-y-0">
+                                    <h3 class="text-lg font-semibold text-white">Calendar</h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        <select class="bg-primary text-white text-xs px-2 py-1 rounded border border-gray-600">
+                                            <option>All courses</option>
+                                            <option>CS courses</option>
+                                            <option>IS courses</option>
+                                        </select>
+                                        <select class="bg-primary text-white text-xs px-2 py-1 rounded border border-gray-600">
+                                            <option>All statuses</option>
+                                            <option>Pending</option>
+                                            <option>Approved</option>
+                                        </select>
+                                        <button class="bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600">New event</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-between items-center mb-4">
+                                    <button class="text-blue-400 text-sm hover:underline">← June</button>
+                                    <h4 class="text-white font-semibold text-lg">July 2025</h4>
+                                    <button class="text-blue-400 text-sm hover:underline">August →</button>
+                                </div>
+                                
+                                <div class="grid grid-cols-7 gap-0.5 text-xs">
+                                    <div class="text-center text-gray-400 font-semibold p-1">M</div>
+                                    <div class="text-center text-gray-400 font-semibold p-1">T</div>
+                                    <div class="text-center text-gray-400 font-semibold p-1">W</div>
+                                    <div class="text-center text-gray-400 font-semibold p-1">T</div>
+                                    <div class="text-center text-gray-400 font-semibold p-1">F</div>
+                                    <div class="text-center text-gray-400 font-semibold p-1">S</div>
+                                    <div class="text-center text-gray-400 font-semibold p-1">S</div>
+                                    
+                                    <!-- Week 1 -->
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer relative">
+                                        <span class="text-xs">1</span>
+                                        <div class="text-green-400 text-xs mt-0.5">✓</div>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">2</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">3</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer relative">
+                                        <span class="text-xs">4</span>
+                                        <div class="text-green-400 text-xs mt-0.5">✓</div>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">5</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">6</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">7</span>
+                                    </div>
+                                    
+                                    <!-- Week 2 -->
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">8</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">9</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer relative">
+                                        <span class="text-xs">10</span>
+                                        <div class="text-yellow-400 text-xs mt-0.5">⏳</div>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">11</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">12</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">13</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">14</span>
+                                    </div>
+                                    
+                                    <!-- Week 3 -->
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer relative">
+                                        <span class="text-xs">15</span>
+                                        <div class="text-green-400 text-xs mt-0.5">✓</div>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">16</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer relative">
+                                        <span class="text-xs">17</span>
+                                        <div class="text-yellow-400 text-xs mt-0.5">⏳</div>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">18</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">19</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">20</span>
+                                    </div>
+                                    <div class="text-center text-white p-1 hover:bg-primary rounded cursor-pointer">
+                                        <span class="text-xs">21</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Other tiles below, same width -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <!-- Lectures -->
+                    <section id="lectures" class="card-bg p-3 rounded-lg shadow-md w-full">
+                        <div class="flex justify-between mb-2">
+                            <h2 class="text-lg font-semibold text-white">Lectures</h2>
+                            <button class="btn-white px-2 py-1 rounded text-xs">Add</button>
+                        </div>
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr class="bg-secondary">
+                                    <th class="p-1 text-white">Course</th>
+                                    <th class="p-1 text-white">Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-1">Data Structures</td>
+                                    <td class="p-1">10:00 AM</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Algorithms</td>
+                                    <td class="p-1">2:00 PM</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <!-- Bookings -->
+                    <section id="bookings" class="card-bg p-3 rounded-lg shadow-md w-full">
+                        <div class="flex justify-between mb-2">
+                            <h2 class="text-lg font-semibold text-white">Bookings</h2>
+                            <button class="btn-white px-2 py-1 rounded text-sm">Manage</button>
+                        </div>
+                        <div class="flex">
+                            <div class="w-1/2 pr-2">
+                                <ul class="text-xs list-disc pl-4 text-gray-300">
+                                    <li>Room 101: AI Seminar (10:00 AM)</li>
+                                    <li>Room 202: Guest Lecture (2:00 PM)</li>
+                                    <li>Room 303: Data Structures (11:00 AM)</li>
+                                    <li>Room 404: Algorithms (3:00 PM)</li>
+                                    <li>Room 505: Web Development (1:00 PM)</li>
+                                </ul>
+                            </div>
+                            <div class="w-1/2">
+                                <canvas id="bookingChart" style="max-height: 80px;"></canvas>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- Events -->
+                    <section id="events" class="card-bg p-3 rounded-lg shadow-md w-full">
+                        <div class="flex justify-between mb-2">
+                            <h2 class="text-lg font-semibold text-white">Events</h2>
+                            <button class="btn-white px-2 py-1 rounded text-sm">Add</button>
+                        </div>
+                        <table class="w-full text-xs">
+                            <thead>
+                                <tr class="bg-secondary">
+                                    <th class="p-1 text-white">Event</th>
+                                    <th class="p-1 text-white">Date</th>
+                                    <th class="p-1 text-white">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-1">AI Seminar</td>
+                                    <td class="p-1">2025-07-10</td>
+                                    <td class="p-1"><span class="bg-yellow-500 text-white px-2 py-0.5 rounded text-xs">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1">Guest Lecture</td>
+                                    <td class="p-1">2025-07-15</td>
+                                    <td class="p-1"><span class="bg-green-500 text-white px-2 py-0.5 rounded text-xs">Approved</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Report Chart (Pie)
+        const reportCtx = document.getElementById('reportChart').getContext('2d');
+        new Chart(reportCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Events', 'Lectures', 'Clashes'],
+                datasets: [{
+                    data: [12, 45, 3],
+                    backgroundColor: ['#FFFFFF', '#1A1A1A', '#151718'],
+                    borderColor: ['#151718', '#FFFFFF', '#FFFFFF'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'bottom', labels: { font: { size: 8 }, color: '#fff' } } },
+                maintainAspectRatio: false
+            }
+        });
+
+        // Department Chart (Bar)
+        const deptCtx = document.getElementById('deptChart').getContext('2d');
+        new Chart(deptCtx, {
+            type: 'bar',
+            data: {
+                labels: ['CS', 'SE', 'IS'],
+                datasets: [{
+                    label: 'Lectures by Dept',
+                    data: [20, 15, 10],
+                    backgroundColor: '#1A1A1A',
+                    borderColor: '#FFFFFF',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true, ticks: { color: '#fff' } }, x: { ticks: { color: '#fff' } } },
+                plugins: { legend: { display: false, labels: { color: '#fff' } } },
+                maintainAspectRatio: false
+            }
+        });
+
+        // Clash Chart (Doughnut)
+        const clashCtx = document.getElementById('clashChart').getContext('2d');
+        new Chart(clashCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Event vs Lecture', 'Lecture vs Lecture'],
+                datasets: [{
+                    data: [2, 1],
+                    backgroundColor: ['#FFFFFF', '#1A1A1A'],
+                    borderColor: ['#151718', '#FFFFFF'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'bottom', labels: { font: { size: 8 }, color: '#fff' } } },
+                maintainAspectRatio: false
+            }
+        });
+
+        // Booking Chart (Doughnut)
+        const bookingCtx = document.getElementById('bookingChart').getContext('2d');
+        new Chart(bookingCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Ongoing', 'Upcoming', 'Completed'],
+                datasets: [{
+                    data: [5, 3, 10],
+                    backgroundColor: ['#FFFFFF', '#1A1A1A', '#151718'],
+                    borderColor: ['#151718', '#FFFFFF', '#FFFFFF'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'bottom', labels: { font: { size: 8 }, color: '#fff' } } },
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+</body>
+</html>
