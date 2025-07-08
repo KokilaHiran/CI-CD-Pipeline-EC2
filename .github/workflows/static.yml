@@ -1,4 +1,4 @@
-name: Deploy Labor Deploy HTML to EC2
+name: Deploy Static HTML to EC2
 on:
   push:
     branches: [ main ]
@@ -6,11 +6,12 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v4
       - name: Deploy to Nginx
         run: |
-          sudo cp -r $GITHUB_WORKSPACE/*.html /var/www/html/
+          sudo rm -rf /var/www/html/*
+          sudo cp -r $GITHUB_WORKSPACE/* /var/www/html/
           sudo chown -R www-data:www-data /var/www/html
           sudo chmod -R 755 /var/www/html
-          sudo systemctl restart nginx
+          sudo systemctl reload nginx
